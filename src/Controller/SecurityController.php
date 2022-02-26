@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\Model\UserRegistrationFormModel;
 use App\Form\UserRegistrationFormType;
 use App\Security\LoginFormAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,14 +52,22 @@ class SecurityController extends AbstractController
 
         // TODO - use Symfony forms & validation
         if ($form->isSubmitted() && $form->isValid() ) {
-            /** @var User $user */
-            $user = $form->getData();
+            //Este modelo nos servirá para unmappear los campos del objeto user y tratarlos fuera de él
+            /** @var UserRegistrationFormModel $userModel */
+            $userModel = $form->getData();
+            //$user = $form->getData();
+
+            $user = new User();
+            $user->setEmail($userModel->email);
+
             $user->setPassword($passwordEncoder->encodePassword(
                 $user,
-                $form['plainPassword']->getData()
+                $userModel->plainPassword
+                //$form['plainPassword']->getData()
             ));
 
-            if(true === $form['agreeTerms']->getData()){
+            //if(true === $form['agreeTerms']->getData()){
+            if(true === $userModel->agreeTerms){
                 $user->agreeTermsAt();
             }
 

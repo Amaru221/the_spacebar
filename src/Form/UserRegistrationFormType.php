@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Form\Model\UserRegistrationFormModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,7 +23,7 @@ class UserRegistrationFormType extends AbstractType
             ->add('email', EmailType::class)
             // don't use password: avoid EVER setting that on a
             // field that might be persisted
-            ->add('plainPassword',PasswordType::class, [
+            ->add('plainPassword',PasswordType::class)/*, [
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank([
@@ -33,22 +34,22 @@ class UserRegistrationFormType extends AbstractType
                         'minMessage' => 'Come on, you can think of a password longer than tah!'
                     ]),
                 ]
-            ])
-            ->add('agreeTerms', CheckboxType::class,[
+            ])*/
+            ->add('agreeTerms', CheckboxType::class)/*,[
                 'mapped' => false,
                 'constraints' =>[
                     new IsTrue([
                         'message' => 'I know, it\'s silly, but you must agree to our terms'
                     ])
                 ]
-            ])
+            ])*/
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => UserRegistrationFormModel::class,
         ]);
     }
 }
