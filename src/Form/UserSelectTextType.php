@@ -7,6 +7,8 @@ use App\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -46,11 +48,29 @@ class UserSelectTextType extends AbstractType
             'finder_callback' => function(UserRepository $userRepository, string $email){
                 return $userRepository->findOneBy(['email' => $email]);
             },
-            'attr' => [
+            /*'attr' => [
                 'class' => 'js-user-autocomplete',
                 'data-autocomplete-url' => $this->router->generate('admin_utility_users'),
-            ]
+            ]*/
         ]);
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        // Recogemos los atributos del field
+        $attr = $view->vars['attr'];
+        //si existen atributos añadimos un espacio
+        $class = isset($attr['class']) ? $attr['class'].' ' : '';
+        //añadimos la clase js-user-autocomplete al final del string de class para usarla desde jquery
+        $class.= 'js-user-autocomplete';
+
+        //añadimos la nueva clase a los atributos del field
+        $attr['class'] = $class;
+        //añadimos el atributo data-autocomplete-url para que pueda ser llamado desde AJAX
+        $attr['data-autocomplete-url'] = $this->router->generate('admin_utility_users');
+
+        //añadimos los nuevos atributos a la vista
+        $view->vars['attr'] = $attr;
     }
 
 
