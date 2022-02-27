@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ArticleAdminController extends AbstractController
+class ArticleAdminController extends BaseController
 {
 
 
@@ -27,8 +27,6 @@ class ArticleAdminController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            //$data = $form->getData($request);
-
             /** @var Article $article */
             $article = $form->getData();
 
@@ -69,6 +67,32 @@ class ArticleAdminController extends AbstractController
             ]);
         }
         return $this->render('article_admin/edit.html.twig',[
+            'articleForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/admin/article/location-select", name="admin_article_location_select")
+     * @IsGranted("ROLE_USER")
+     */
+    public function getSpecificLocationSelect(Request $request){
+
+        //a custom security check
+        if(!$this->isGranted('ROLE_ADMIN_ARTICLE') && $this->getUser()->getArticles()->isEmpty()){
+            throw $this->createAccessDeniedException();
+        }
+
+        $article = new Article();
+        $article->setLocation($request->query->get('location'));
+
+        $form = $this->createForm(ArticleFormType::class, $article);
+
+        //no field? Return an empty response
+        if(!$form->has('specificLocationName')){
+            return new Response(null, 204);
+        }
+
+        return $this->render('article_admin/_specific_location_name.html.twig',[
             'articleForm' => $form->createView(),
         ]);
     }

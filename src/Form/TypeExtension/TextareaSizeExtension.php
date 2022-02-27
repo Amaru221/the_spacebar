@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormTypeExtensionInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TextAreaSizeExtension implements FormTypeExtensionInterface
+class TextareaSizeExtension implements FormTypeExtensionInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
